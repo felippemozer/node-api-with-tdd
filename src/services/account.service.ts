@@ -1,5 +1,6 @@
 import knex from "knex";
 import knexfile from "../../knexfile";
+import { ApiError } from "../middlewares/errors";
 
 const client = knex(knexfile).table("accounts");
 
@@ -23,7 +24,7 @@ export async function findById(id: string) {
 
 export async function save(data: ISaveInputDTO) {
     if(!data.name) {
-        throw new Error("name is required");
+        throw new ApiError(422, "Name is required");
     }
     try {
         const accounts = await client.insert({
@@ -32,7 +33,7 @@ export async function save(data: ISaveInputDTO) {
         }, "*");
         return accounts;
     } catch {
-        throw new Error("account already exists");
+        throw new ApiError(400, "Account already exists");
     }
 }
 

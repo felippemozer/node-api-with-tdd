@@ -1,11 +1,9 @@
 import knex from "knex";
 import knexfile from "../../knexfile";
+import { ApiError } from "../middlewares/errors";
+import bcrypt from "bcrypt";
 
 const client = knex(knexfile).table("users");
-
-export async function findAll() {
-    return await client.select();
-}
 
 export interface UserDomain{
     email: string;
@@ -20,20 +18,29 @@ export interface ISaveInputDTO {
     password: string
 }
 
+export async function findAll() {
+    return await client.select(["id", "email", "name"]);
+}
+
 export async function save(data: ISaveInputDTO) {
     if(!data.name) {
-        throw new Error("name is required");
+        throw new ApiError(422, "Name is required");
     }
     if(!data.email) {
-        throw new Error("email is required");
+        throw new ApiError(422, "Email is required");
     }
     if(!data.password) {
-        throw new Error("password is required");
+        throw new ApiError(422, "Password is required");
     }
+    const salt = bcrypt.genSaltSync();
+    const encryptedPassword = bcrypt.hashSync(data.password, salt);
     try {
-        const users = await client.insert(data, "*");
+        const users = await client.insert({
+            ...data,
+            password: encryptedPassword
+        }, ["id", "email", "name"]);
         return users;
     } catch {
-        throw new Error("user already exists");
+        throw new ApiError(400, "User already exists");
     }
 }

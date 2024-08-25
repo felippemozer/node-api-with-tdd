@@ -34,7 +34,7 @@ test("Cannot insert an account without name", async () => {
     });
 
     expect(res.status).toBe(422);
-    expect(res.text).toBe("name is required");
+    expect(res.body.error).toBe("Name is required");
 });
 
 test.skip("Cannot create accounts with duplicated names", () =>{});
@@ -79,7 +79,6 @@ test.failing("Must update an account", async () => {
 // ! SÓ DEUS SABE PORQUE ESSE TESTE TÁ FALHANDO
 test.failing("Must delete an account", async () => {
     const getResponse = await req.get(MAIN_ROUTE);
-    console.log(getResponse.body);
     const account = getResponse.body[0];
 
     const res = await req.delete(`${MAIN_ROUTE}/${account.id}`);

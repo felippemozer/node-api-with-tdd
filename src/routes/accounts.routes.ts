@@ -3,18 +3,26 @@ import { findAll, findById, remove, save, update } from "../services/account.ser
 
 const router = Router();
 
-router.get("/", async (req, res) => {
-    const accounts = await findAll();
-    res.status(200).json(accounts);
+router.get("/", async (req, res, next) => {
+    try {
+        const accounts = await findAll();
+        res.status(200).json(accounts);
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.get("/:id", async (req, res) => {
+router.get("/:id", async (req, res, next) => {
     const id = req.params.id;
-    const account = await findById(id);
-    res.status(200).json(account);
+    try {
+        const account = await findById(id);
+        res.status(200).json(account);
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.post("/", async (req, res) => {
+router.post("/", async (req, res, next) => {
     const data = req.body;
     try {
         await save({
@@ -23,33 +31,33 @@ router.post("/", async (req, res) => {
         });
         res.status(201).send("Account created");
     } catch (error) {
-        const err = error as Error;
-        if (err.message.includes("required")) {
-            res.status(422).send(err.message);
-            return;
-        }
-        res.status(400).send(err.message);
-        return;
+        next(error);
     }
 });
 
-router.patch("/:id", async (req, res) => {
+router.patch("/:id", async (req, res, next) => {
     const { name } = req.body;
     const id = req.params.id;
 
-    const account = await update(id, {
-        name
-    });
-
-    res.status(200).json(account);
+    try {
+        const account = await update(id, {
+            name
+        });
+        res.status(200).json(account);
+    } catch (error) {
+        next(error);
+    }
 });
 
-router.delete("/:id", async (req, res) => {
+router.delete("/:id", async (req, res, next) => {
     const id = req.params.id;
 
-    await remove(id);
-
-    res.status(204).end();
+    try {
+        await remove(id);
+        res.status(204).end();
+    } catch (error) {
+        next(error);
+    }
 })
 
 export default router;
