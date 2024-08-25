@@ -1,11 +1,12 @@
 import { Router } from "express";
-import { findAll, findById, remove, save, update } from "../services/account.service";
+import { AccountService } from "../services";
+
 
 const router = Router();
 
 router.get("/", async (req, res, next) => {
     try {
-        const accounts = await findAll();
+        const accounts = await AccountService.findAll();
         res.status(200).json(accounts);
     } catch (error) {
         next(error);
@@ -15,7 +16,7 @@ router.get("/", async (req, res, next) => {
 router.get("/:id", async (req, res, next) => {
     const id = req.params.id;
     try {
-        const account = await findById(id);
+        const account = await AccountService.findById(id);
         res.status(200).json(account);
     } catch (error) {
         next(error);
@@ -25,7 +26,7 @@ router.get("/:id", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
     const data = req.body;
     try {
-        await save({
+        await AccountService.save({
             name: data.name,
             userId: data.user_id
         });
@@ -40,7 +41,7 @@ router.patch("/:id", async (req, res, next) => {
     const id = req.params.id;
 
     try {
-        const account = await update(id, {
+        const account = await AccountService.update(id, {
             name
         });
         res.status(200).json(account);
@@ -53,7 +54,7 @@ router.delete("/:id", async (req, res, next) => {
     const id = req.params.id;
 
     try {
-        await remove(id);
+        await AccountService.remove(id);
         res.status(204).end();
     } catch (error) {
         next(error);

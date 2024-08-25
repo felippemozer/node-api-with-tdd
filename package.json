@@ -36,6 +36,7 @@
     "body-parser": "^1.20.2",
     "express": "^4.19.2",
     "http-status-codes": "^2.3.0",
+    "jwt-simple": "^0.5.6",
     "knex": "^3.1.0",
     "pg": "^8.12.0"
   }

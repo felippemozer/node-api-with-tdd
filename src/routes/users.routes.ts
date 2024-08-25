@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { findAll, save } from "../services/user.service";
+import { UserService } from "../services";
 
 const router = Router();
 
 router.get("/", async (req, res, next) => {
     try {
-        const users = await findAll();
+        const users = await UserService.findAll();
         res.status(200).json(users);
     } catch (error) {
         next(error);
@@ -15,7 +15,7 @@ router.get("/", async (req, res, next) => {
 router.post("/", async (req, res, next) => {
     const data = req.body;
     try {
-        const result = await save(data);
+        const result = await UserService.save(data);
         res.status(201).json(result[0]);
     } catch (error) {
         next(error)
