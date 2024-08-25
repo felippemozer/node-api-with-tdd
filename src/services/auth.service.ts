@@ -1,6 +1,7 @@
 import { UserService } from ".";
 import bcrypt from "bcrypt";
 import jwt from "jwt-simple";
+import { ApiError } from "../middlewares/errors";
 
 interface ILoginDTO {
     email: string;
@@ -9,6 +10,10 @@ interface ILoginDTO {
 
 export async function login(data: ILoginDTO): Promise<string> {
     const user = await UserService.findByEmail(data.email);
+
+    if(!user) {
+        throw new ApiError(401, "Email or password is wrong");
+    }
     
     if(bcrypt.compareSync(data.password, user[0].password)) {
         const payload = {
@@ -19,7 +24,7 @@ export async function login(data: ILoginDTO): Promise<string> {
 
         const token = jwt.encode(payload, "secret");
         return token;
+    } else {
+        throw new ApiError(401, "Email or password is wrong");
     }
-
-    return "";
 }

@@ -20,3 +20,34 @@ test("Must login with success", async () => {
     expect(res.body).toHaveProperty("token");
 });
 
+test("Cannot login when password is wrong", async () => {
+    const user = await UserService.save({
+        name: "Walter White",
+        email: `walterwhite-${Date.now()}@email.com`,
+        password: "123456"
+    });
+
+    const res = await req.post("/auth/login").send({
+        email: user[0].email,
+        password: "654321"
+    });
+    
+    expect(res.status).toBe(401);
+    expect(res.body.error).toHaveProperty("Email or password is wrong");
+});
+
+test("Cannot login when email is wrong", async () => {
+    const user = await UserService.save({
+        name: "Walter White",
+        email: `walterwhite-${Date.now()}@email.com`,
+        password: "123456"
+    });
+
+    const res = await req.post("/auth/login").send({
+        email: user[0].email,
+        password: "654321"
+    });
+    
+    expect(res.status).toBe(401);
+    expect(res.body.error).toHaveProperty("Email or password is wrong");
+});
