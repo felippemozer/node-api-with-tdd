@@ -4,6 +4,20 @@ import { UserService } from "../src/services";
 
 const req = supertest(app);
 
+test("Must create an user by signup", async() => {
+    const user = {
+        name: "Teste",
+        email: `${Date.now()}@email.com`,
+        password: "123456"
+    };
+
+    const res = await req.post("/auth/signup").send(user);
+    
+    expect(res.status).toBe(201);
+    expect(res.body.name).toEqual("Teste");
+    expect(res.body).not.toHaveProperty("password");
+});
+
 test("Must login with success", async () => {
     const user = await UserService.save({
         name: "Walter White",

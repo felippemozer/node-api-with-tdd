@@ -1,8 +1,18 @@
 import { Router } from "express";
-import { AuthService } from "../services";
+import { AuthService, UserService } from "../services";
 import { authenticate } from "../passport";
 
 const router = Router();
+
+router.post("/signup", async (req,res,next) => {
+    const data = req.body;
+    try {
+        const result = await UserService.save(data);
+        res.status(201).json(result);
+    } catch (error) {
+        next(error);
+    }
+})
 
 router.use(authenticate);
 
