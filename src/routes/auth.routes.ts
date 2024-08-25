@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { AuthService } from "../services";
+import { authenticate } from "../passport";
 
 const router = Router();
+
+router.use(authenticate);
 
 router.post("/login", async (req, res, next) => {
     const data = req.body;

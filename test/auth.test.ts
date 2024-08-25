@@ -51,3 +51,10 @@ test("Cannot login when email is wrong", async () => {
     expect(res.status).toBe(401);
     expect(res.body.error).toHaveProperty("Email or password is wrong");
 });
+
+test("Cannot access a protected route without token", async () => {
+    const res = await req.get("/users");
+
+    expect(res.status).toBe(401);
+    expect(res.body.error).toBe("Unauthorized");
+})

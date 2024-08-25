@@ -18,5 +18,6 @@ app.use((err: ApiError, req: Request, res: Response, next: NextFunction) => {
     res.status(status).json({
         "error": message
     });
+    next();
 });
 export default app;

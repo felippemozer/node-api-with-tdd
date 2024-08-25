@@ -22,6 +22,11 @@ export async function findAll() {
     return await client.select(["id", "email", "name"]);
 }
 
+export async function findById(id: string) {
+    const result = await client.where({id}).select(["id", "email", "name"]);
+    return result[0];
+}
+
 export async function findByEmail(email: string) {
     const result = await client.where({email}).select(["id", "email", "name"]);
     return result[0];

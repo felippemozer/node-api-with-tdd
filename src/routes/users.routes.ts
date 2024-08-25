@@ -1,7 +1,10 @@
 import { Router } from "express";
 import { UserService } from "../services";
+import { authenticate } from "../passport";
 
 const router = Router();
+
+router.use(authenticate);
 
 router.get("/", async (req, res, next) => {
     try {
