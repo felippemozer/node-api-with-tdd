@@ -7,6 +7,13 @@ export async function findAll() {
     return await client.select();
 }
 
+export interface UserDomain{
+    email: string;
+    name: string;
+    id: string;
+    password: string;
+}
+
 export interface ISaveInputDTO {
     email: string,
     name: string,
@@ -26,7 +33,7 @@ export async function save(data: ISaveInputDTO) {
     try {
         const users = await client.insert(data, "*");
         return users;
-    } catch (error) {
+    } catch {
         throw new Error("user already exists");
     }
 }
