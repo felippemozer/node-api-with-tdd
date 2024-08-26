@@ -15,6 +15,15 @@ router.get("/", async (req, res, next) => {
     }
 });
 
+router.get("/by-user", async (req, res, next) => {
+    try {
+        const accounts = await AccountService.findAllByUser(req.user?.id);
+        res.status(200).json(accounts);
+    } catch (error) {
+        next(error);
+    }
+})
+
 router.get("/:id", async (req, res, next) => {
     const id = req.params.id;
     try {

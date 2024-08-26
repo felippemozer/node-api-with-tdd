@@ -3,11 +3,13 @@ import app from "../src/app";
 import jwt from "jwt-simple";
 
 import { save, UserDomain } from "../src/services/user.service";
+import { AccountService } from "../src/services";
 
 const req = supertest(app);
 
 const MAIN_ROUTE = "/accounts";
-let user: UserDomain & {
+let user: {
+    email: string;
     token: string;
 };
 
@@ -26,7 +28,6 @@ beforeAll(async () => {
 test("Must create an account", async () => {
     const res = await req.post(MAIN_ROUTE).set("Authorization", `Bearer ${user.token}`).send({
         name: "Account 1",
-        user_id: user.id
     });
 
     expect(res.status).toBe(201);
@@ -35,7 +36,6 @@ test("Must create an account", async () => {
 
 test("Cannot insert an account without name", async () => {
     const res = await req.post(MAIN_ROUTE).set("Authorization", `Bearer ${user.token}`).send({
-        user_id: user.id
     });
 
     expect(res.status).toBe(422);
@@ -45,13 +45,18 @@ test("Cannot insert an account without name", async () => {
 test.skip("Cannot create accounts with duplicated names", () =>{});
 
 test("Must list all accounts", async () => {
-    const res = await req.get(MAIN_ROUTE).set("Authorization", `Bearer ${user.token}`);
+    const res = await req.get(MAIN_ROUTE);
 
     expect(res.status).toBe(200);
     expect(res.body.length).toBeGreaterThanOrEqual(0);
 });
 
-test.skip("Must return all user accounts", () =>{});
+test("Must return all user accounts", async () =>{
+    const res = await req.get(`${MAIN_ROUTE}/by-user`).set("Authorization", `Bearer ${user.token}`);
+
+    expect(res.status).toBe(200);
+    expect(res.body).toBeGreaterThanOrEqual(0);
+});
 
 test("Must return an account by its ID", async () => {
     const accId = 10;

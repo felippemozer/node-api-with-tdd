@@ -17,6 +17,10 @@ export async function findAll() {
     return client.select();
 }
 
+export async function findAllByUser(userId: string) {
+    return client.where({"user_id": userId}).select();
+}
+
 export async function findById(id: string) {
     const account = await client.select().where("id", id);
     return account[0];
